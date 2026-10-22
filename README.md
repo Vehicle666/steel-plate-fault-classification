@@ -53,16 +53,33 @@ Dữ liệu sạch: không có giá trị thiếu, mỗi dòng có đúng 1 nhã
 
 Nhận xét nhanh: các mô hình cây (Gradient Boosting, Extra Trees, Random Forest) cho kết quả tốt nhất; `Other_Faults` là lớp bị nhầm nhiều nhất vì bản chất là lớp "gộp", trong khi `Dirtiness` (chỉ 55 mẫu) khó học do thiếu dữ liệu.
 
-## Chạy trên Google Colab (không cần cài gì)
+## Chạy trên Google Colab (tự push từng bước, không sợ mất runtime)
 
-Bấm badge Colab ở trên, hoặc mở [`notebooks/01_train_colab.ipynb`](notebooks/01_train_colab.ipynb) rồi `Runtime → Run all`.
+Bấm badge Colab ở trên, hoặc mở [`notebooks/01_train_colab.ipynb`](notebooks/01_train_colab.ipynb).
+
+**Chuẩn bị 1 lần:** tạo **Fine-grained Personal Access Token** (Settings → Developer settings → Personal access tokens), chọn repo này, cấp quyền **Contents: Read and write**; thêm vào **Colab Secrets** (🔑) với tên `GH_TOKEN` và bật *Notebook access*.
 
 Notebook sẽ:
 
-1. `git clone` repo này từ GitHub (repo public, không cần token).
-2. Cài `requirements.txt`.
-3. Chạy `python -m src.train` → sinh báo cáo + hình.
-4. Hiển thị bảng kết quả, confusion matrix và cho tải `ket_qua.zip` về máy.
+1. Nạp token từ Colab Secrets (không ghi token vào repo).
+2. `git clone` repo từ GitHub.
+3. Cài `requirements.txt`.
+4. Chạy `python -m src.train --push`: **sau mỗi mô hình** tự commit + push `reports/` và `checkpoints/`.
+5. Hiển thị bảng kết quả, confusion matrix; tải `ket_qua.zip` nếu muốn.
+
+### Chống mất tiến độ
+
+- Mỗi mô hình xong → 1 commit: `train: [3/5] Random Forest — acc=0.7892, macro-F1=0.8015`.
+- Trạng thái train nằm ở `checkpoints/train_state.json` (config, metrics, dự đoán của từng mô hình đã xong) và **được push lên GitHub**.
+- Runtime chết → mở runtime mới, chạy lại mục 1 của notebook rồi chạy:
+
+```powershell
+python -m src.train --resume --push
+```
+
+Các mô hình đã có trong checkpoint sẽ được **bỏ qua**, chỉ train phần còn thiếu. Nếu đổi `--test-size`/`--random-state` thì checkpoint cũ không khớp cấu hình và sẽ train lại từ đầu (có cảnh báo).
+
+> Lưu ý: `checkpoint` chỉ lưu metrics + nhãn dự đoán (không lưu model nặng), nên kéo về máy rất nhẹ. `models/best_model.joblib` chỉ được tạo khi lần chạy đó có fit ít nhất mô hình tốt nhất.
 
 ## Chạy local
 
@@ -73,6 +90,8 @@ pip install -r requirements.txt
 
 python -m src.download_data          # tải lại dataset (đã có sẵn trong repo)
 python -m src.train                  # huấn luyện + đánh giá
+python -m src.train --resume         # train tiếp từ checkpoint
+python -m src.train --push           # tự commit & push sau mỗi mô hình
 python -m src.train --test-size 0.3 --random-state 7
 ```
 
@@ -83,12 +102,15 @@ Kết quả sinh ra:
 | `reports/results.csv`, `results.md` | Bảng điểm các mô hình |
 | `reports/classification_report_*.txt` | Precision/Recall/F1 từng lớp |
 | `reports/figures/*.png` | Confusion matrix & biểu đồ so sánh |
+| `checkpoints/train_state.json` | Trạng thái train để resume (có commit) |
 | `models/best_model.joblib` | Pipeline (scaler + model) tốt nhất |
 
 ## Cấu trúc project
 
 ```
 .
+├── checkpoints/
+│   └── train_state.json              # trạng thái train để --resume
 ├── data/
 │   ├── raw/                          # dataset gốc UCI (có commit, < 1 MB)
 │   └── processed/                    # dữ liệu trung gian (không commit)
@@ -103,8 +125,9 @@ Kết quả sinh ra:
 │   ├── config.py                     # đường dẫn, hằng số
 │   ├── data.py                       # đọc dữ liệu, one-hot → nhãn, chia tập
 │   ├── download_data.py              # tải dataset từ UCI
+│   ├── git_sync.py                   # commit & push từng bước (Colab)
 │   ├── models.py                     # 5 mô hình bọc OvR
-│   └── train.py                      # huấn luyện & đánh giá
+│   └── train.py                      # huấn luyện, checkpoint, resume, push
 ├── requirements.txt
 └── README.md
 ```
@@ -126,6 +149,7 @@ Kết quả sinh ra:
 - [x] Huấn luyện 5 mô hình với OvR
 - [x] Đánh giá & confusion matrix
 - [x] Notebook Colab lấy code từ GitHub
+- [x] Checkpoint sau mỗi mô hình + tự push lên GitHub + resume
 - [ ] Viết báo cáo chi tiết
 
 ## Trích dẫn

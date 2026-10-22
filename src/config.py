@@ -10,6 +10,8 @@ DATA_DIR = ROOT / "data"
 RAW_DIR = DATA_DIR / "raw" / "steel_plates_faults"
 PROCESSED_DIR = DATA_DIR / "processed"
 MODELS_DIR = ROOT / "models"
+CHECKPOINT_DIR = ROOT / "checkpoints"
+CHECKPOINT_PATH = CHECKPOINT_DIR / "train_state.json"
 REPORTS_DIR = ROOT / "reports"
 FIGURES_DIR = REPORTS_DIR / "figures"
 
