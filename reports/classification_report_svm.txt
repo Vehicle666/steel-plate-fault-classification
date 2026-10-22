@@ -1,0 +1,15 @@
+Mô hình: SVM
+
+              precision    recall  f1-score   support
+
+       Bumps     0.6333    0.7037    0.6667        81
+   Dirtiness     0.8182    0.8182    0.8182        11
+    K_Scatch     0.9730    0.9231    0.9474        78
+Other_Faults     0.7404    0.5704    0.6444       135
+      Pastry     0.4706    0.7500    0.5783        32
+      Stains     0.8000    0.8571    0.8276        14
+   Z_Scratch     0.7727    0.8947    0.8293        38
+
+    accuracy                         0.7326       389
+   macro avg     0.7440    0.7882    0.7588       389
+weighted avg     0.7500    0.7326    0.7339       389

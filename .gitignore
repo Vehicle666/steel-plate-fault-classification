@@ -13,10 +13,8 @@ env/
 # Riêng data/raw/ được commit vì dataset nhỏ (<1 MB) và cần cho tái lập kết quả.
 data/processed/*
 models/*
-reports/figures/*
 !data/processed/.gitkeep
 !models/.gitkeep
-!reports/figures/.gitkeep
 
 # IDE / OS
 .vscode/

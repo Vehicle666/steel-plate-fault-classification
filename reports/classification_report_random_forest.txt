@@ -1,0 +1,15 @@
+Mô hình: Random Forest
+
+              precision    recall  f1-score   support
+
+       Bumps     0.7639    0.6790    0.7190        81
+   Dirtiness     0.9000    0.8182    0.8571        11
+    K_Scatch     0.9726    0.9103    0.9404        78
+Other_Faults     0.6975    0.8370    0.7609       135
+      Pastry     0.5556    0.4688    0.5085        32
+      Stains     1.0000    0.8571    0.9231        14
+   Z_Scratch     0.9697    0.8421    0.9014        38
+
+    accuracy                         0.7892       389
+   macro avg     0.8370    0.7732    0.8015       389
+weighted avg     0.7980    0.7892    0.7897       389
