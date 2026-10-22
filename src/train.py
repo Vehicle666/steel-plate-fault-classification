@@ -259,7 +259,7 @@ def main():
     )
 
     config = build_config(args.test_size, args.random_state, dataset)
-    state = load_checkpoint(config) if (args.resume and not args.no_save) else None
+    state = load_checkpoint(config) if args.resume else None
     if state is None:
         if args.resume:
             print("! Không có checkpoint phù hợp, bắt đầu train từ đầu.")
@@ -290,7 +290,7 @@ def main():
         done = state["completed"].get(key)
         tag = f"[{index}/{total}]"
 
-        if done and not args.no_save:
+        if done:
             metrics = done["metrics"]
             y_pred = np.asarray(done["y_pred"], dtype=object)
             print(f"{tag} {name}: đã xong trong checkpoint, bỏ qua "
