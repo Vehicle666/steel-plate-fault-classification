@@ -20,6 +20,21 @@ Phân loại **7 loại lỗi bề mặt tấm thép** từ **đặc trưng hìn
 - 7 lớp: `Pastry`, `Z_Scratch`, `K_Scatch`, `Stains`, `Dirtiness`, `Bumps`, `Other_Faults`.
 - Lớp **`Other_Faults`** gom nhiều dạng lỗi khác nhau nên rất khó tách -> cần phân tích riêng trong confusion matrix.
 
+### Phân bố lớp (đã kiểm tra)
+
+| Lớp | Số mẫu |
+|---|---:|
+| Other_Faults | 673 |
+| Bumps | 402 |
+| K_Scatch | 391 |
+| Z_Scratch | 190 |
+| Pastry | 158 |
+| Stains | 72 |
+| Dirtiness | 55 |
+| **Tổng** | **1.941** |
+
+Dữ liệu sạch: không có giá trị thiếu, mỗi dòng có đúng 1 nhãn one-hot = 1.
+
 ## Cấu trúc project
 
 ```
@@ -51,7 +66,7 @@ pip install -r requirements.txt
 ## Trạng thái
 
 - [x] Khởi tạo môi trường & cấu trúc project
-- [ ] Tải và khảo sát dataset
+- [x] Tải và khảo sát dataset
 - [ ] Tiền xử lý (one-hot -> nhãn, chuẩn hoá, chia train/test)
 - [ ] Huấn luyện 5 mô hình với OvR
 - [ ] Đánh giá & confusion matrix

@@ -10,11 +10,10 @@ venv/
 env/
 
 # Dữ liệu & kết quả sinh ra (tải lại bằng script)
-data/raw/*
+# Riêng data/raw/ được commit vì dataset nhỏ (<1 MB) và cần cho tái lập kết quả.
 data/processed/*
 models/*
 reports/figures/*
-!data/raw/.gitkeep
 !data/processed/.gitkeep
 !models/.gitkeep
 !reports/figures/.gitkeep
