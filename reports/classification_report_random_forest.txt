@@ -5,12 +5,12 @@ Tập đánh giá: validation
 
        Bumps     0.6184    0.5875    0.6026        80
    Dirtiness     1.0000    0.6364    0.7778        11
-    K_Scatch     0.9241    0.9359    0.9299        78
-Other_Faults     0.6849    0.7463    0.7143       134
+    K_Scatch     0.9231    0.9231    0.9231        78
+Other_Faults     0.6735    0.7388    0.7046       134
       Pastry     0.7407    0.6250    0.6780        32
       Stains     0.8824    1.0000    0.9375        15
    Z_Scratch     0.8333    0.7895    0.8108        38
 
-    accuracy                         0.7526       388
-   macro avg     0.8120    0.7601    0.7787       388
-weighted avg     0.7550    0.7526    0.7515       388
+    accuracy                         0.7474       388
+   macro avg     0.8102    0.7572    0.7763       388
+weighted avg     0.7508    0.7474    0.7468       388
