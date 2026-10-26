@@ -26,11 +26,14 @@ def build_models(random_state: int = RANDOM_STATE) -> dict[str, OneVsRestClassif
             SVC(kernel="rbf", C=1.0, gamma="scale", class_weight="balanced"),
         ),
         "k-NN": OneVsRestClassifier(
-            KNeighborsClassifier(n_neighbors=5, weights="distance"),
+            KNeighborsClassifier(n_neighbors=7, weights="uniform"),
         ),
         "Random Forest": OneVsRestClassifier(
             RandomForestClassifier(
                 n_estimators=300,
+                max_depth=12,
+                min_samples_leaf=2,
+                max_features="sqrt",
                 class_weight="balanced_subsample",
                 n_jobs=-1,
                 random_state=random_state,
@@ -39,6 +42,9 @@ def build_models(random_state: int = RANDOM_STATE) -> dict[str, OneVsRestClassif
         "Extra Trees": OneVsRestClassifier(
             ExtraTreesClassifier(
                 n_estimators=300,
+                max_depth=12,
+                min_samples_leaf=2,
+                max_features="sqrt",
                 class_weight="balanced",
                 n_jobs=-1,
                 random_state=random_state,
@@ -47,8 +53,13 @@ def build_models(random_state: int = RANDOM_STATE) -> dict[str, OneVsRestClassif
         "Gradient Boosting": OneVsRestClassifier(
             GradientBoostingClassifier(
                 n_estimators=200,
-                learning_rate=0.1,
-                max_depth=3,
+                learning_rate=0.05,
+                max_depth=2,
+                min_samples_leaf=3,
+                subsample=0.8,
+                n_iter_no_change=10,
+                validation_fraction=0.1,
+                tol=0.001,
                 random_state=random_state,
             ),
         ),

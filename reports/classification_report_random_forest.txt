@@ -1,15 +1,16 @@
 Mô hình: Random Forest
+Tập đánh giá: validation
 
               precision    recall  f1-score   support
 
-       Bumps     0.7639    0.6790    0.7190        81
-   Dirtiness     0.9000    0.8182    0.8571        11
-    K_Scatch     0.9726    0.9103    0.9404        78
-Other_Faults     0.6975    0.8370    0.7609       135
-      Pastry     0.5556    0.4688    0.5085        32
-      Stains     1.0000    0.8571    0.9231        14
-   Z_Scratch     0.9697    0.8421    0.9014        38
+       Bumps     0.6184    0.5875    0.6026        80
+   Dirtiness     1.0000    0.6364    0.7778        11
+    K_Scatch     0.9241    0.9359    0.9299        78
+Other_Faults     0.6849    0.7463    0.7143       134
+      Pastry     0.7407    0.6250    0.6780        32
+      Stains     0.8824    1.0000    0.9375        15
+   Z_Scratch     0.8333    0.7895    0.8108        38
 
-    accuracy                         0.7892       389
-   macro avg     0.8370    0.7732    0.8015       389
-weighted avg     0.7980    0.7892    0.7897       389
+    accuracy                         0.7526       388
+   macro avg     0.8120    0.7601    0.7787       388
+weighted avg     0.7550    0.7526    0.7515       388

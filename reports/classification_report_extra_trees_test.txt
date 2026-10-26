@@ -1,0 +1,16 @@
+Mô hình: Extra Trees
+Tập đánh giá: test (chỉ dùng sau khi chọn mô hình)
+
+              precision    recall  f1-score   support
+
+       Bumps     0.6364    0.6914    0.6627        81
+   Dirtiness     1.0000    0.9091    0.9524        11
+    K_Scatch     0.9861    0.9103    0.9467        78
+Other_Faults     0.7015    0.6963    0.6989       135
+      Pastry     0.6364    0.6562    0.6462        32
+      Stains     0.8000    0.8571    0.8276        14
+   Z_Scratch     0.8919    0.8684    0.8800        38
+
+    accuracy                         0.7635       389
+   macro avg     0.8075    0.7984    0.8021       389
+weighted avg     0.7702    0.7635    0.7662       389

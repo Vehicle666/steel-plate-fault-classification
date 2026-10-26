@@ -11,7 +11,14 @@ from dataclasses import dataclass
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
-from src.config import LABEL_COLS, NNA_PATH, RANDOM_STATE, TEST_SIZE, VAR_PATH
+from src.config import (
+    LABEL_COLS,
+    NNA_PATH,
+    RANDOM_STATE,
+    TEST_SIZE,
+    VALIDATION_SIZE,
+    VAR_PATH,
+)
 
 
 @dataclass(frozen=True)
@@ -59,13 +66,35 @@ def load_dataset() -> Dataset:
 def split_dataset(
     dataset: Dataset,
     test_size: float = TEST_SIZE,
+    validation_size: float = VALIDATION_SIZE,
     random_state: int = RANDOM_STATE,
-) -> tuple[pd.DataFrame, pd.DataFrame, pd.Series, pd.Series]:
-    """Chia train/test theo tỉ lệ, giữ nguyên phân bố lớp (stratify)."""
-    return train_test_split(
+) -> tuple[
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.DataFrame,
+    pd.Series,
+    pd.Series,
+    pd.Series,
+]:
+    """Chia stratified train/validation/test; validation và test không dùng để fit."""
+    if not 0 < test_size < 1 or not 0 < validation_size < 1:
+        raise ValueError("test_size và validation_size phải nằm giữa 0 và 1")
+    if test_size + validation_size >= 1:
+        raise ValueError("Tổng test_size và validation_size phải nhỏ hơn 1")
+
+    X_train_validation, X_test, y_train_validation, y_test = train_test_split(
         dataset.X,
         dataset.y,
         test_size=test_size,
         random_state=random_state,
         stratify=dataset.y,
     )
+    relative_validation_size = validation_size / (1 - test_size)
+    X_train, X_validation, y_train, y_validation = train_test_split(
+        X_train_validation,
+        y_train_validation,
+        test_size=relative_validation_size,
+        random_state=random_state,
+        stratify=y_train_validation,
+    )
+    return X_train, X_validation, X_test, y_train, y_validation, y_test

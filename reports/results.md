@@ -1,9 +1,11 @@
 # Kết quả thực nghiệm
 
-| model             |   accuracy |   balanced_accuracy |   f1_macro |   f1_weighted |
-|:------------------|-----------:|--------------------:|-----------:|--------------:|
-| Gradient Boosting |     0.7943 |              0.7917 |     0.8114 |        0.7963 |
-| Extra Trees       |     0.7892 |              0.7893 |     0.8047 |        0.7887 |
-| Random Forest     |     0.7892 |              0.7732 |     0.8015 |        0.7897 |
-| k-NN              |     0.7686 |              0.7866 |     0.7741 |        0.766  |
-| SVM               |     0.7326 |              0.7882 |     0.7588 |        0.7339 |
+Mô hình được chọn theo validation macro-F1; test chỉ đánh giá mô hình được chọn.
+
+| model             |   train_f1_macro |   validation_f1_macro |   f1_macro_gap |   test_accuracy |   test_balanced_accuracy |   test_f1_macro |   test_f1_weighted |
+|:------------------|-----------------:|----------------------:|---------------:|----------------:|-------------------------:|----------------:|-------------------:|
+| Extra Trees       |           0.9773 |                0.8018 |         0.1755 |          0.7635 |                   0.7984 |          0.8021 |             0.7662 |
+| SVM               |           0.8583 |                0.7826 |         0.0756 |                 |                          |                 |                    |
+| Random Forest     |           0.9871 |                0.7787 |         0.2085 |                 |                          |                 |                    |
+| Gradient Boosting |           0.8703 |                0.7437 |         0.1266 |                 |                          |                 |                    |
+| k-NN              |           0.8026 |                0.7208 |         0.0817 |                 |                          |                 |                    |

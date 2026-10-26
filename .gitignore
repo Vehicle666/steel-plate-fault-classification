@@ -15,6 +15,7 @@ data/processed/*
 models/*
 !data/processed/.gitkeep
 !models/.gitkeep
+!models/best_model.joblib
 
 # IDE / OS
 .vscode/

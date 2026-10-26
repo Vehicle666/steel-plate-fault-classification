@@ -37,15 +37,22 @@ Phân loại **7 loại lỗi bề mặt tấm thép** từ **đặc trưng hìn
 
 Dữ liệu sạch: không có giá trị thiếu, mỗi dòng có đúng 1 nhãn one-hot = 1. Tập dữ liệu **mất cân bằng** (lớp lớn nhất gấp ~12 lần lớp nhỏ nhất) nên dùng thêm macro-F1 và balanced accuracy.
 
-## Kết quả (test set 20%, random_state=42)
+## Kết quả lần chạy hiện tại (random_state=42)
 
-| Hạng | Mô hình | Accuracy | Balanced acc. | Macro-F1 | Weighted-F1 |
-|---:|---|---:|---:|---:|---:|
-| 1 | **Gradient Boosting** | **0.7943** | **0.7917** | **0.8114** | **0.7963** |
-| 2 | Extra Trees | 0.7892 | 0.7893 | 0.8047 | 0.7887 |
-| 3 | Random Forest | 0.7892 | 0.7732 | 0.8015 | 0.7897 |
-| 4 | k-NN | 0.7686 | 0.7866 | 0.7741 | 0.7660 |
-| 5 | SVM (RBF) | 0.7326 | 0.7882 | 0.7588 | 0.7339 |
+Ứng viên được xếp hạng bằng validation macro-F1. Chỉ Extra Trees được đánh giá trên test sau khi
+chọn mô hình; các ô test còn lại cố ý để trống.
+
+| Hạng | Mô hình | Train macro-F1 | Validation macro-F1 | Gap train-validation |
+|---:|---|---:|---:|---:|
+| 1 | **Extra Trees** | 0.9773 | **0.8018** | 0.1755 |
+| 2 | SVM (RBF) | 0.8583 | 0.7826 | 0.0756 |
+| 3 | Random Forest | 0.9871 | 0.7787 | 0.2085 |
+| 4 | Gradient Boosting | 0.8703 | 0.7437 | 0.1266 |
+| 5 | k-NN | 0.8026 | 0.7208 | 0.0817 |
+
+**Extra Trees test:** accuracy 0.7635, balanced accuracy 0.7984, macro-F1 0.8021,
+weighted-F1 0.7662. Gap của các mô hình cây cho thấy vẫn còn dấu hiệu overfit; kết quả
+validation/test không phải bảo đảm cho dữ liệu tương lai.
 
 ![So sánh mô hình](reports/figures/metrics_comparison.png)
 
@@ -59,17 +66,28 @@ Bấm badge Colab ở trên, hoặc mở [`notebooks/01_train_colab.ipynb`](note
 
 **Chuẩn bị 1 lần:** tạo **Fine-grained Personal Access Token** (Settings → Developer settings → Personal access tokens), chọn repo này, cấp quyền **Contents: Read and write**; thêm vào **Colab Secrets** (🔑) với tên `GH_TOKEN` và bật *Notebook access*.
 
+Trước khi mở Colab, hãy push các thay đổi source/notebook hiện tại lên nhánh `main`; notebook clone code từ GitHub, không lấy thay đổi chưa push trong máy local.
+
 Notebook sẽ:
 
 1. Nạp token từ Colab Secrets (không ghi token vào repo).
 2. `git clone` repo từ GitHub.
 3. Cài `requirements.txt`.
-4. Chạy `python -m src.train --push`: **sau mỗi mô hình** tự commit + push `reports/` và `checkpoints/`.
-5. Hiển thị bảng kết quả, confusion matrix; tải `ket_qua.zip` nếu muốn.
+4. Chạy `python -m src.train --push`: **sau mỗi mô hình** tự commit + push `reports/` và `checkpoints/`; model cuối cùng cũng được push.
+5. Hiển thị kết quả validation, điểm test cuối cùng và confusion matrix. Không cần tải artifact về máy.
+
+### Chống overfitting và đánh giá
+
+- Chia dữ liệu phân tầng thành **60% train / 20% validation / 20% test**.
+- Chỉ train trên train; scaler cũng chỉ fit trên train. Chọn mô hình bằng **validation macro-F1**.
+- Chỉ đánh giá test **một lần**, sau khi đã chọn mô hình; model cuối được fit lại trên train + validation.
+- Random Forest/Extra Trees giới hạn độ sâu, số mẫu lá và số đặc trưng mỗi lần chia; k-NN dùng 7 láng giềng đồng trọng số.
+- Gradient Boosting giảm learning rate, giới hạn độ sâu, dùng subsampling và early stopping.
+- Báo cáo macro-F1 train/validation và khoảng cách giữa chúng để nhận biết dấu hiệu overfit; đây là chẩn đoán, không bảo đảm loại bỏ hoàn toàn overfit.
 
 ### Chống mất tiến độ
 
-- Mỗi mô hình xong → 1 commit: `train: [3/5] Random Forest — acc=0.7892, macro-F1=0.8015`.
+- Khi bắt đầu một lượt train mới, checkpoint rỗng được push trước để resume không nhầm kết quả của lượt cũ. Mỗi ứng viên xong → 1 commit validation; sau đó có commit cuối chứa test report và `models/best_model.joblib`.
 - Trạng thái train nằm ở `checkpoints/train_state.json` (config, metrics, dự đoán của từng mô hình đã xong) và **được push lên GitHub**.
 - Runtime chết → mở runtime mới, chạy lại mục 1 của notebook rồi chạy:
 
@@ -77,9 +95,9 @@ Notebook sẽ:
 python -m src.train --resume --push
 ```
 
-Các mô hình đã có trong checkpoint sẽ được **bỏ qua**, chỉ train phần còn thiếu. Nếu đổi `--test-size`/`--random-state` thì checkpoint cũ không khớp cấu hình và sẽ train lại từ đầu (có cảnh báo).
+Các mô hình đã có trong checkpoint phù hợp sẽ được **bỏ qua**, chỉ train phần còn thiếu. Checkpoint phiên bản trước không tương thích với quy trình mới và sẽ tự động bỏ qua. Nếu đổi `--test-size`, `--validation-size`, `--random-state` hoặc nội dung dữ liệu, pipeline sẽ train lại từ đầu.
 
-> Lưu ý: `checkpoint` chỉ lưu metrics + nhãn dự đoán (không lưu model nặng), nên kéo về máy rất nhẹ. `models/best_model.joblib` chỉ được tạo khi lần chạy đó có fit ít nhất mô hình tốt nhất.
+> Checkpoint lưu metrics và dự đoán validation để resume. Model cuối, báo cáo và checkpoint đều được commit/push lên GitHub; không cần tải artifact xuống.
 
 ## Chạy local
 
@@ -88,20 +106,20 @@ python -m venv .venv
 .\.venv\Scripts\Activate.ps1
 pip install -r requirements.txt
 
-python -m src.download_data          # tải lại dataset (đã có sẵn trong repo)
 python -m src.train                  # huấn luyện + đánh giá
 python -m src.train --resume         # train tiếp từ checkpoint
 python -m src.train --push           # tự commit & push sau mỗi mô hình
-python -m src.train --test-size 0.3 --random-state 7
+python -m src.train --no-save        # chạy thử đầy đủ nhưng không ghi artifact
+python -m src.train --test-size 0.2 --validation-size 0.2 --random-state 7
 ```
 
 Kết quả sinh ra:
 
 | Đường dẫn | Nội dung |
 |---|---|
-| `reports/results.csv`, `results.md` | Bảng điểm các mô hình |
-| `reports/classification_report_*.txt` | Precision/Recall/F1 từng lớp |
-| `reports/figures/*.png` | Confusion matrix & biểu đồ so sánh |
+| `reports/results.csv`, `results.md` | Điểm train/validation; test của mô hình được chọn |
+| `reports/classification_report_*.txt` | Báo cáo validation và test cuối |
+| `reports/figures/*.png` | Confusion matrix validation/test & biểu đồ so sánh |
 | `checkpoints/train_state.json` | Trạng thái train để resume (có commit) |
 | `models/best_model.joblib` | Pipeline (scaler + model) tốt nhất |
 
@@ -114,7 +132,7 @@ Kết quả sinh ra:
 ├── data/
 │   ├── raw/                          # dataset gốc UCI (có commit, < 1 MB)
 │   └── processed/                    # dữ liệu trung gian (không commit)
-├── models/                           # mô hình đã huấn luyện (không commit)
+├── models/                           # model cuối đã huấn luyện (được push)
 ├── notebooks/
 │   └── 01_train_colab.ipynb          # notebook chạy trên Colab
 ├── reports/
@@ -136,16 +154,16 @@ Kết quả sinh ra:
 
 1. Đọc `Faults.NNA` (tab-separated, không header), gán tên cột từ `Faults27x7_var`.
 2. Chuyển 7 cột one-hot → 1 nhãn (`Other_Faults`, `Bumps`, ...).
-3. Chuẩn hoá `StandardScaler` (fit trên train, áp dụng cho test) trong `Pipeline`.
-4. Chia **stratified 80/20** để giữ tỉ lệ lớp.
-5. Mỗi mô hình bọc `OneVsRestClassifier` → 7 bộ phân loại nhị phân.
-6. Đánh giá Accuracy, Balanced accuracy, Macro/Weighted F1 và confusion matrix.
+3. Chia **stratified 60/20/20** thành train, validation và test.
+4. Chuẩn hoá `StandardScaler` trong `Pipeline` (fit trên train; fit train+validation cho mô hình cuối).
+5. Mỗi mô hình bọc `OneVsRestClassifier` → 7 bộ phân loại nhị phân; Gradient Boosting dừng sớm.
+6. Chọn mô hình theo validation macro-F1; test chỉ đánh giá mô hình đã chọn.
 
 ## Trạng thái
 
 - [x] Khởi tạo môi trường & cấu trúc project
 - [x] Tải và khảo sát dataset
-- [x] Tiền xử lý (one-hot → nhãn, chuẩn hoá, chia train/test)
+- [x] Tiền xử lý (one-hot → nhãn, chuẩn hoá, chia train/validation/test)
 - [x] Huấn luyện 5 mô hình với OvR
 - [x] Đánh giá & confusion matrix
 - [x] Notebook Colab lấy code từ GitHub
