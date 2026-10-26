@@ -3,14 +3,14 @@ Tập đánh giá: validation
 
               precision    recall  f1-score   support
 
-       Bumps     0.5714    0.6500    0.6082        80
-   Dirtiness     0.7778    0.6364    0.7000        11
-    K_Scatch     0.9103    0.9103    0.9103        78
-Other_Faults     0.6774    0.6269    0.6512       134
-      Pastry     0.5909    0.4062    0.4815        32
-      Stains     0.8333    1.0000    0.9091        15
-   Z_Scratch     0.7174    0.8684    0.7857        38
+       Bumps     0.6250    0.5625    0.5921        80
+   Dirtiness     0.8000    0.7273    0.7619        11
+    K_Scatch     0.9221    0.9103    0.9161        78
+Other_Faults     0.6642    0.6642    0.6642       134
+      Pastry     0.5172    0.4688    0.4918        32
+      Stains     0.7895    1.0000    0.8824        15
+   Z_Scratch     0.7021    0.8684    0.7765        38
 
-    accuracy                         0.7088       388
-   macro avg     0.7255    0.7283    0.7208       388
-weighted avg     0.7080    0.7088    0.7049       388
+    accuracy                         0.7113       388
+   macro avg     0.7172    0.7431    0.7264       388
+weighted avg     0.7082    0.7113    0.7080       388
