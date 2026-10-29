@@ -2062,8 +2062,8 @@
     "test_balanced_accuracy": 0.7984022214442013,
     "test_f1_macro": 0.8020563319933505,
     "test_f1_weighted": 0.7661934092586851,
-    "final_fit_time_s": 5.5313990280001235,
-    "test_predict_time_s": 0.6069239819998984
+    "final_fit_time_s": 5.956222615999877,
+    "test_predict_time_s": 0.6993756659999235
   },
   "y_test_pred": [
     "Other_Faults",
